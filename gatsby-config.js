@@ -4,17 +4,32 @@
  * See: https://www.gatsbyjs.com/docs/reference/config-files/gatsby-config/
  */
 
+// init. environment variables
+const dotenv = require('dotenv');
+dotenv.config();
+
+const { githubApiQuery } = require('./gh_api')
+
 /**
  * @type {import('gatsby').GatsbyConfig}
  */
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Default Starter`,
-    description: `Kick off your next, great Gatsby project with this default starter. This barebones starter ships with the main Gatsby configuration files you might need.`,
-    author: `@gatsbyjs`,
-    siteUrl: `https://gatsbystarterdefaultsource.gatsbyjs.io/`,
+    title: 'Tiko\'s web',
+    description: `repos, posts and comments`,
+    author: `tik`,
+    siteUrl: `https://ga.netlify.app/`,
   },
   plugins: [
+    {
+      resolve: `gatsby-source-github-api`,
+      options: {
+        url: "https://api.github.com/graphql",
+        token: process.env.ghtoken,
+        graphQLQuery: githubApiQuery,
+        variables: { github_login: 'tik9' }
+      }
+    },
     `gatsby-plugin-image`,
     {
       resolve: `gatsby-source-filesystem`,
@@ -32,11 +47,11 @@ module.exports = {
         short_name: `starter`,
         start_url: `/`,
         background_color: `#663399`,
-        // This will impact how browsers show your PWA/website
+        // PWA/website
         // https://css-tricks.com/meta-theme-color-and-trickery/
         // theme_color: `#663399`,
         display: `minimal-ui`,
-        icon: `src/images/gatsby-icon.png`, // This path is relative to the root of the site.
+        icon: `src/images/gatsby-icon.png`,
       },
     },
   ],
