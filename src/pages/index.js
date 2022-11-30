@@ -1,61 +1,101 @@
-import * as React from "react"
-
+import React, { useEffect, useState } from 'react';
+import { graphql, useStaticQuery } from "gatsby"
 import Layout from "../components/layout"
-import Seo from "../components/seo"
-import * as styles from "../components/index.module.css"
+import Seo from "../components/seo";
 
-const links = [
-  {
-    text: "Repos",
-    url: "repos",
-    description:
-      "Github Repos",
-  },
-  {
-    text: "Posts",
-    url: "posts",
-    description:
-      "Posts from SO",
-  },
-]
+var net_fun = '/.netlify/functions/'
+// var net_host = 'https://tifun.netlify.app'
+var net_host = 'http://localhost'
+var net_utils = net_host + net_fun + 'utils'
 
-const moreLinks = [
-  { text: "Api Site", url: "https://tifun.netlify.app" },
-  { text: "Teaching", url: "https://tinh.netlify.app", }
-]
+export default function Index() {
 
-const IndexPage = () => (
-  <Layout>
-    <div className={styles.textCenter}>
-      <h1>Index</h1>
-    </div>
-    <ul className={styles.list}>
-      {links.map(link => (
-        <li key={link.url} className={styles.listItem}>
-          <a
-            className={styles.listItemLink}
-            href={`${link.url}`}
-          >
-            {link.text} ↗
-          </a>
-          <p className={styles.listItemDescription}>{link.description}</p>
-        </li>
-      ))}
-    </ul>
-    {moreLinks.map((link, i) => (
-      <React.Fragment key={link.url}>
-        <a href={`${link.url}`}>{link.text}</a>
-        {i !== moreLinks.length - 1 && <> · </>}
-      </React.Fragment>
-    ))}
-  </Layout>
-)
+  const [posts, setPosts] = useState([])
 
-/**
- * Head export to define metadata for the page
- *
- * See: https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-head/
- */
-export const Head = () => <Seo title="Home" />
+  async function fetch_posts() {
+    var res = await (await fetch('https://api.stackexchange.com/2.2/users/1705829/comments?site=stackoverflow&filter=withbody')).json()
+    res = res.items.slice(0, 3)
 
-export default IndexPage
+    // var options = { method: 'post', body: 1 }
+
+    res = await Promise.all(
+      res.map(async ({ post_id, body: text, creation_date: date }) => ({
+        date:
+          await (await fetch(net_utils + '?q=' + date)).json()
+        , post_id,
+        text: await (await fetch(net_utils, {
+          method: 'post',
+          body: JSON.stringify({ input: text })
+        })).json()
+      })))
+    // console.log(1, res)
+    setPosts(res)
+  }
+
+  useEffect(() => { fetch_posts() }, [])
+
+  const repo_data = useStaticQuery(
+    graphql`
+      query MyQuery {
+        allGithubData {
+          nodes {
+            data {
+              user {
+                repositories {
+                  nodes {
+                    description
+                    id
+                    name
+                    openGraphImageUrl
+                    updatedAt(fromNow: true)
+                    url
+                    primaryLanguage {
+                      name
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `
+  )
+  var repos = repo_data.allGithubData.nodes[0].data.user.repositories.nodes
+  // repos = ''
+
+  // console.log(repos)
+
+  return (
+    <Layout>
+      <div id='repos'>
+        <h2>Github Repos</h2>
+        {repos && (
+          <ul>
+            {
+              repos.map(repo =>
+                <li key={repo.id}><h4><a href={`https://github.com/tik9/${repo.name}`}>{repo.name}</a></h4> {repo.description}</li>
+              )
+            }
+          </ul>
+        )}
+      </div>
+      <div id='posts'>
+        <h1>Posts</h1>
+        {posts && (
+          <ul>
+            {posts.map(item => (
+              <li key={item.post_id}>
+                <h4><a href={`https://stackoverflow.com/questions/${item.post_id}`}>{item.date}</a></h4>
+                {item.text}
+              </li>
+            ))
+            }
+          </ul>
+        )}
+      </div>
+    </Layout>
+  );
+}
+
+export const Head = () => <Seo title="Repos" />
