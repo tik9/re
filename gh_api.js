@@ -1,23 +1,16 @@
-exports.githubApiQuery = `
-query($github_login: String!) {
-    user(login: $github_login) {
+// orderBy: {field: updated_AT, direction: DESC}
+
+exports.ghQuery = `query {
+    user(login: "tik9") {
       name
-      repositories(first: 4) {
+      repositories(first: 3,orderBy:{field:PUSHED_AT,direction:DESC}) {
         nodes {
             description
             id
             name
-            openGraphImageUrl
-            updatedAt
+            pushedAt
             url
-            primaryLanguage {
-              name
-            }
-            stargazers {
-              totalCount
-            }
         }
       }
     }
-  }
-`
+  }`

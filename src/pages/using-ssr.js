@@ -1,8 +1,7 @@
-import * as React from "react"
-import { Link } from "gatsby"
+var Layout = require("../components/layout")
+var React = require("react")
 
-import Layout from "../components/layout"
-import Seo from "../components/seo"
+var { Link } = require("gatsby")
 
 const UsingSSR = ({ serverData }) => {
   return (
@@ -32,7 +31,7 @@ const UsingSSR = ({ serverData }) => {
   )
 }
 
-export const Head = () => <Seo title="Using SSR" />
+export const Head = () => <head title="Using SSR" />
 
 export default UsingSSR
 

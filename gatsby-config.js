@@ -4,21 +4,19 @@
  * See: https://www.gatsbyjs.com/docs/reference/config-files/gatsby-config/
  */
 
-// init. environment variables
-const dotenv = require('dotenv');
-dotenv.config();
+require('dotenv').config()
 
-const { githubApiQuery } = require('./gh_api')
+var { ghQuery } = require('./gh_api')
 
 /**
  * @type {import('gatsby').GatsbyConfig}
  */
 module.exports = {
   siteMetadata: {
-    title: 'Tiko\'s web',
-    description: `repos, posts and comments`,
+    title: 'Index of tiko',
+    description: `repos, posts`,
     author: `tik`,
-    siteUrl: `https://ga.netlify.app/`,
+    siteUrl: `https://tiremaster.gatsbyjs.io`,
   },
   plugins: [
     {
@@ -26,8 +24,7 @@ module.exports = {
       options: {
         url: "https://api.github.com/graphql",
         token: process.env.ghtoken,
-        graphQLQuery: githubApiQuery,
-        variables: { github_login: 'tik9' }
+        graphQLQuery: ghQuery
       }
     },
     `gatsby-plugin-image`,
@@ -38,6 +35,14 @@ module.exports = {
         path: `${__dirname}/src/images`,
       },
     },
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        name: `content`,
+        path: `${__dirname}/src/content`,
+      },
+    },
+    `gatsby-transformer-remark`,
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sharp`,
     {
@@ -51,7 +56,7 @@ module.exports = {
         // https://css-tricks.com/meta-theme-color-and-trickery/
         // theme_color: `#663399`,
         display: `minimal-ui`,
-        icon: `src/images/gatsby-icon.png`,
+        icon: `src/images/favicon.png`,
       },
     },
   ],

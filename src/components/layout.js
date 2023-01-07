@@ -1,7 +1,6 @@
 
-import { Link } from "gatsby"
 import * as React from "react"
-import { useStaticQuery, graphql } from "gatsby"
+import { Link, useStaticQuery, graphql } from "gatsby"
 
 import Header from "./header"
 import "./layout.css"
@@ -35,8 +34,11 @@ const Layout = ({ children }) => {
             fontSize: `var(--font-sm)`,
           }}
         >
-          © {new Date().getFullYear()} &middot; Tiko's
-        </footer>
+          <Link to='/tik-imprint'
+            style={{ fontSize: `var(--font-sm)`, textDecoration: `none` }}
+          > Imprint</Link>
+          <span style={{ marginLeft: '400px' }}>© {new Date().getFullYear()} &middot; Tiko's
+          </span></footer>
       </div>
     </>
   )

@@ -1,87 +1,53 @@
-import React, { useEffect, useState } from 'react';
-import { graphql, useStaticQuery } from "gatsby"
-import Layout from "../components/layout"
-import Seo from "../components/seo";
 
-var net_fun = '/.netlify/functions/'
+import React, { useEffect, useState } from 'react'
+import Layout from "../components/layout"
+import { graphql, useStaticQuery } from "gatsby"
+
 // var net_host = 'https://tifun.netlify.app'
 var net_host = 'http://localhost'
-var net_utils = net_host + net_fun + 'utils'
+// var net_repos = net_host + '/.netlify/functions/repos'
+var net_posts = net_host + '/.netlify/functions/posts'
 
 export default function Index() {
-
   const [posts, setPosts] = useState([])
+  // const [repos, setRepos] = useState([])
 
   async function fetch_posts() {
-    var res = await (await fetch('https://api.stackexchange.com/2.2/users/1705829/comments?site=stackoverflow&filter=withbody')).json()
-    res = res.items.slice(0, 3)
+    var res
+    res = await (await fetch(net_posts)).json();
 
-    // var options = { method: 'post', body: 1 }
+    // console.log(2, res)
 
-    res = await Promise.all(
-      res.map(async ({ post_id, body: text, creation_date: date }) => ({
-        date:
-          await (await fetch(net_utils + '?q=' + date)).json()
-        , post_id,
-        text: await (await fetch(net_utils, {
-          method: 'post',
-          body: JSON.stringify({ input: text })
-        })).json()
-      })))
-    // console.log(1, res)
     setPosts(res)
   }
 
   useEffect(() => { fetch_posts() }, [])
 
-  const repo_data = useStaticQuery(
-    graphql`
-      query MyQuery {
-        allGithubData {
-          nodes {
-            data {
-              user {
-                repositories {
-                  nodes {
-                    description
-                    id
-                    name
-                    openGraphImageUrl
-                    updatedAt(fromNow: true)
-                    url
-                    primaryLanguage {
-                      name
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    `
-  )
-  var repos = repo_data.allGithubData.nodes[0].data.user.repositories.nodes
-  // repos = ''
+  // async function fetch_repos() {var res = await (await fetch(net_repos)).json();setRepos(res)};useEffect(() => { fetch_repos() }, [])
 
+  var repo_data = useStaticQuery(graphql` query {allGithubData{nodes{data{user{repositories {nodes {id name description pushedAt(fromNow:true) url }} }}}}}`)
+  // openGraphImageUrl updatedAt url primaryLanguage {name}
+
+  const repos = repo_data.allGithubData.nodes[0].data.user.repositories.nodes
   // console.log(repos)
 
   return (
     <Layout>
-      <div id='repos'>
-        <h2>Github Repos</h2>
+      <h1>Tiko's</h1>
+      <div id='repos' style={{ marginTop: '20px' }}>
+        <h3>Github Repos</h3>
         {repos && (
           <ul>
             {
               repos.map(repo =>
-                <li key={repo.id}><h4><a href={`https://github.com/tik9/${repo.name}`}>{repo.name}</a></h4> {repo.description}</li>
+                <li key={repo.id}><h4><a href={`https://github.com/tik9/${repo.name}`}>{repo.description}</a></h4> Last update: {repo.pushedAt}</li>
               )
             }
           </ul>
         )}
       </div>
-      <div id='posts'>
-        <h1>Posts</h1>
+      <div id='posts' style={{ marginTop: '60px' }}>
+        <h3>Posts</h3>
         {posts && (
           <ul>
             {posts.map(item => (
@@ -94,8 +60,13 @@ export default function Index() {
           </ul>
         )}
       </div>
+      <div id='contact' style={{ marginTop: '60px' }}>
+        <h3>Contact</h3>
+
+        <div>timo "at" tik1.net</div>
+      </div>
     </Layout>
   );
 }
 
-export const Head = () => <Seo title="Repos" />
+export const Head = () => <title>Tiko</title>
