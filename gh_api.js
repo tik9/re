@@ -10,6 +10,8 @@ exports.ghQuery = `query {
             name
             pushedAt
             url
+            primaryLanguage {name}
+            openGraphImageUrl
         }
       }
     }
