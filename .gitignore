@@ -4,11 +4,6 @@ build/Release
 
 # Dependency directories
 node_modules/
-jspm_packages/
-
-
-# Optional eslint cache
-.eslintcache
 
 # dotenv environment variable files
 .env*
@@ -16,3 +11,6 @@ jspm_packages/
 # gatsby files
 .cache/
 public
+
+# Local Netlify folder
+.netlify

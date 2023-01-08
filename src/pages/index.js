@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import Layout from "../components/layout"
 import { graphql, useStaticQuery } from "gatsby"
+import axios from 'axios'
 
 var net_host = 'https://tifun.netlify.app'
 // var net_host = 'http://localhost'
@@ -14,9 +15,7 @@ export default function Index() {
 
   async function fetch_posts() {
     var res
-    res = await (await fetch(net_posts)).json();
-
-    // console.log(2, res)
+    res = (await axios.get(net_posts)).data;
 
     setPosts(res)
   }
@@ -26,8 +25,8 @@ export default function Index() {
   // async function fetch_repos() {var res = await (await fetch(net_repos)).json();setRepos(res)};useEffect(() => { fetch_repos() }, [])
 
   var repo_data = useStaticQuery(graphql` query {allGithubData{nodes{data{user{repositories {nodes {id name description pushedAt(fromNow:true) openGraphImageUrl primaryLanguage {name} url }} }}}}}`)
-
-  const repos = repo_data.allGithubData.nodes[0].data.user.repositories.nodes
+  var repos
+  repos = repo_data.allGithubData.nodes[0].data.user.repositories.nodes
   // console.log(repos)
 
   return (
