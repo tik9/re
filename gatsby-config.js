@@ -19,6 +19,7 @@ module.exports = {
     siteUrl: `https://tiremaster.gatsbyjs.io`,
   },
   plugins: [
+    'gatsby-plugin-netlify',
     {
       resolve: `gatsby-source-github-api`,
       options: {

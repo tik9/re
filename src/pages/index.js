@@ -39,7 +39,7 @@ export default function Index() {
             {
               repos.map(repo =>
                 <li key={repo.id}><h4><a href={`https://github.com/tik9/${repo.name}`}>{repo.description}</a></h4> Last update: {repo.pushedAt}
-                  <div><img src={repo.openGraphImageUrl} width="200" /></div>
+                  <div><img src={repo.openGraphImageUrl} width="200" alt='foo' /></div>
                   Primary language: {repo.primaryLanguage.name}
                 </li>
               )

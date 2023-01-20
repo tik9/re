@@ -1,12 +1,14 @@
 {
   "name": "rep",
   "dependencies": {
+    "@netlify/plugin-gatsby": "^3.5.0",
     "axios": "^1.2.0",
     "dotenv": "^16.0.3",
     "esm": "^3.2.25",
     "gatsby": "^5.0.0",
     "gatsby-plugin-image": "^3.0.0",
     "gatsby-plugin-manifest": "^5.0.0",
+    "gatsby-plugin-netlify": "^5.1.0",
     "gatsby-plugin-sharp": "^5.0.0",
     "gatsby-source-filesystem": "^5.0.0",
     "gatsby-source-github-api": "^1.0.0",
